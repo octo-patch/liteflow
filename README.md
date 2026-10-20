@@ -1,6 +1,6 @@
 <p align="center">
 <a href="https://liteflow.cc/">
-    <img src="static/img/logo-main.svg" width="50%" height="auto" alt="logo">
+    <img src="static/img/logo-main.png" width="50%" height="auto" alt="logo">
 </a>
 </p>
 
@@ -34,7 +34,7 @@ You can find out how to join the community on the official website!
 * **Full Spring Boot support:** Supports Spring Boot 2.X, 3.X, and now the latest Spring Boot 4.X.
 * **Scripting language support:** You can define script language nodes that support Groovy, Java, Kotlin, JavaScript, QLExpress, Python, Lua and Aviator. More script languages will be supported in the future.
 * **Scripts fully connected with Java:** All scripting languages can call Java methods, reference any instance, and even make RPC calls inside scripts.
-* **AI Agent orchestration:** Wraps a full ReAct Agent into a standard LiteFlow component, so AI can be orchestrated directly into your business rules.
+* **AI Agent orchestration:** Wraps a full Agent into a standard LiteFlow component, so AI can be orchestrated directly into your business rules.
 * **Rule nesting support:** You can use simple expressions to create multiple nested complex logic layouts if you want.
 * **Component retry support:** Components can support retry, and each component can customize the retry configuration and specify exceptions.
 * **Context isolation mechanism:** Reliable context isolation mechanism, you do not have to worry about high concurrency data flow.
@@ -50,8 +50,8 @@ LiteFlow is a choreographed rules engine that is best at decoupling your systems
 
 LiteFlow uses regular expressions to drive the engine that you define. Have you ever thought about how to write multithreaded process choreography like the following?
 
-<img src="static/img/flow_e1.svg" style="zoom: 80%">
-<img src="static/img/flow_e2.svg" style="zoom: 80%">
+<img src="static/img/flow_e1.png" width="1071" style="zoom: 80%">
+<img src="static/img/flow_e2.png" width="1051" style="zoom: 80%">
 
 These processes can be easily solved with LiteFlow! The framework has a very low threshold to learn the expression language, but it can accomplish extremely high complexity of the choreography.
 
@@ -63,9 +63,9 @@ Looking forward to your use！
 
 ## AI Agent Orchestration (New in v2.16.0)
 
-Starting from v2.16.0, LiteFlow ships its own AI Agent module, `liteflow-react-agent`.
+Starting from v2.16.0, LiteFlow ships its own AI Agent module, `liteflow-agent`.
 
-It is not a simple "LLM component". Instead, it wraps a full **ReAct (Reasoning + Acting) Agent** into a standard LiteFlow component — **one component is one Agent**. You only declare a component and implement a few simple methods; talking to LLM providers, multi-turn conversation memory, and the Skills system are all handled for you by the module.
+It is not a simple "LLM component". The lightweight core wraps a full **Agent (Reasoning + Acting) Agent** into a standard LiteFlow component — **one component is one Agent**. Optional modules add AgentScope Harness context engineering and policy-bound local, remote, or Docker filesystem backends.
 
 Once an Agent becomes a LiteFlow component, it automatically inherits the full orchestration power of LiteFlow. You write rules exactly the way you always have — except one of the nodes is now a thinking AI:
 
@@ -85,27 +85,9 @@ THEN(prepare, WHEN(analyzerAgent, riskAgent), summaryAgent, notify);
 
 None of `THEN`, `WHEN`, `IF`, `SWITCH` or `FOR` here is newly invented for AI — they are the same orchestration operators LiteFlow has used for years. **If you can orchestrate LiteFlow, you can orchestrate AI.**
 
-The module connects to mainstream LLM platforms — OpenAI, Claude, Gemini, DeepSeek, Qwen (DashScope), Kimi, GLM and more — and provides multi-turn conversation memory, the Skills system, workspace file tools, streaming output, and so on. Switching models is basically a one-line change to `model()`.
+The module connects to mainstream LLM platforms — OpenAI, Claude, Gemini, DeepSeek, Qwen (DashScope), Kimi, GLM and more — and provides namespaced AgentScope state, typed event observation, structured output, HITL, skills, and optional Harness/sandbox support. Switching models is basically a one-line change to `model()`.
 
-> Note: The AI Agent module is built on agentscope-java and requires JDK 21+ at runtime. See the [official documentation](https://liteflow.cc/) for the full usage guide.
-
-## Sponsors
-
-**驰骋工作流引擎**
-
-<a href="https://ccbpm.cn/?frm=liteFlow"><img src="static/img/chicheng-banner.png"></a>
-
-**FastBee物联网平台**
-
-<a href="https://fastbee.cn/"><img src="static/img/fb-banner.png"></a>
-
-**速众 AI 低代码开发平台**
-
-<a href="https://www.suconnect.com?hmsr=LiteFlow&hmpl=&hmcu=LiteFlow&hmkw=&hmci="><img src="static/img/suzhong-banner.jpg"></a>
-
-**Easysearch**
-
-<a href="https://easysearch.cn/"><img src="https://infinilabs.cn/img/download/media-assets/easysearch-banner-4.webp"></a>
+> Note: The AI Agent modules are compiled and verified on JDK 17 with AgentScope Java 2.0.2. Guarded local filesystem access is path protection inside the host JVM, not a security sandbox; use a properly hardened Docker or remote backend for untrusted execution. See the [official documentation](https://liteflow.cc/) for the full usage guide.
 
 **DISCORD LINK**
 

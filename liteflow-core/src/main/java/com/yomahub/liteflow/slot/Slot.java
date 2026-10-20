@@ -168,6 +168,10 @@ public class Slot {
 		metaDataMap.remove(key);
 	}
 
+	public boolean removeAttachment(String key, Object expectedValue) {
+		return metaDataMap.remove(key, expectedValue);
+	}
+
 	public <T> T getInput(String nodeId) {
 		return (T) metaDataMap.get(NODE_INPUT_PREFIX + nodeId);
 	}
@@ -190,6 +194,10 @@ public class Slot {
 
 	public <T> void setResponseData(T t) {
 		putMetaDataMap(RESPONSE, t);
+	}
+
+	public void clearResponseData() {
+		metaDataMap.remove(RESPONSE);
 	}
 
 	public <T> T getChainReqData(String chainId) {
@@ -377,21 +385,18 @@ public class Slot {
 	}
 
 	public void addChainInstance(Chain chain){
-		if (!hasMetaData(CHAIN_INSTANCE)) {
-			this.putMetaDataMap(CHAIN_INSTANCE, ListUtil.toList(chain));
-		}else{
-			List<Chain> list = (List<Chain>) metaDataMap.get(CHAIN_INSTANCE);
-			list.add(chain);
-		}
+		// #IDB16L 这里用ConcurrentHashMap来存放chain实例,按chainId为key
+		// 因为在WHEN并行分支中执行子chain时,写操作会和getCurrentChainInstance的读操作并发
+		// 用普通List会在遍历时抛出ConcurrentModificationException
+		Map<String, Chain> chainMap = (Map<String, Chain>) metaDataMap
+				.computeIfAbsent(CHAIN_INSTANCE, k -> new ConcurrentHashMap<String, Chain>());
+		// 同一个chainId只保留最先加入的实例,与原先stream().findFirst()的语义保持一致
+		chainMap.putIfAbsent(chain.getId(), chain);
 	}
 
 	public Chain getCurrentChainInstance(String currentChainId){
-		if (hasMetaData(CHAIN_INSTANCE)) {
-			List<Chain> list = (List<Chain>) metaDataMap.get(CHAIN_INSTANCE);
-			return list.stream().filter(chain -> chain.getId().equals(currentChainId)).findFirst().orElse(null);
-		}else{
-			return null;
-		}
+		Map<String, Chain> chainMap = (Map<String, Chain>) metaDataMap.get(CHAIN_INSTANCE);
+		return chainMap == null ? null : chainMap.get(currentChainId);
 	}
 
 	public void addStep(CmpStep step) {
@@ -494,7 +499,7 @@ public class Slot {
 	/**
 	 * 设置当前 chain 执行的会话标识。
 	 *
-	 * <p>用于 ReAct Agent 等需要在多个组件之间共享同一会话上下文的场景：
+	 * <p>用于 Agent 等需要在多个组件之间共享同一会话上下文的场景：
 	 * 同 chain 内首个 agent 解析后写回 slot，后续 agent 直接复用，从而保证
 	 * 整条链路属于同一段对话（共享 workspace、各 agent 的记忆按 nodeId 分桶）。
 	 */

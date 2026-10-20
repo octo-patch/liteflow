@@ -86,4 +86,11 @@ atlassian-ide-plugin.xml
 .claude
 .vscode
 .codegraph
+/.superpowers/
 *.factorypath
+/.worktrees/
+.node_instance_id
+# AgentScope default JSON state-store root (./data/agent-state)
+data/
+/docs
+/scripts/
